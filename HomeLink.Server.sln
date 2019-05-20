@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeLink.Server", "HomeLink.Server\HomeLink.Server.csproj", "{40EC8D7C-6BE8-4CEF-AFBD-8A5EBF7E0815}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeLink.Server", "HomeLink.Server\HomeLink.Server.csproj", "{40EC8D7C-6BE8-4CEF-AFBD-8A5EBF7E0815}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FFFC3D98-1916-4A7D-97E6-545C64E41333}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7B51F3F3-B8C3-4848-A7F3-D289057E7BD4}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,10 @@ Global
 		{40EC8D7C-6BE8-4CEF-AFBD-8A5EBF7E0815}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40EC8D7C-6BE8-4CEF-AFBD-8A5EBF7E0815}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40EC8D7C-6BE8-4CEF-AFBD-8A5EBF7E0815}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFC3D98-1916-4A7D-97E6-545C64E41333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFC3D98-1916-4A7D-97E6-545C64E41333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFC3D98-1916-4A7D-97E6-545C64E41333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFC3D98-1916-4A7D-97E6-545C64E41333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

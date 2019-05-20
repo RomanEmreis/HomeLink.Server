@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  homelink.server:
+    image: ${DOCKER_REGISTRY-}homelinkserver
+    build:
+      context: .
+      dockerfile: HomeLink.Server/Dockerfile

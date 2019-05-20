@@ -6,6 +6,7 @@
     <UserSecretsId>73475589-2f62-4109-b075-329af32332c8</UserSecretsId>
     <NullableContextOptions>enable</NullableContextOptions>
     <LangVersion>8.0</LangVersion>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
