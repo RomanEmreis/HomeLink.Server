@@ -9,7 +9,7 @@ namespace HomeLink.Server.Extensions {
             if (_mimeTypes.TryGetValue(ext, out var type))
                 return type;
 
-            throw new ArgumentException();
+            throw new ArgumentException(); //TODO: add custom ex
         }
 
         private static readonly Dictionary<string, string> _mimeTypes = new Dictionary<string, string> {

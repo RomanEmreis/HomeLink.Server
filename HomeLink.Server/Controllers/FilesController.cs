@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using HomeLink.Server.Background;
 using HomeLink.Server.Extensions;
+using HomeLink.Server.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -11,10 +14,12 @@ namespace HomeLink.Server.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class FilesController : ControllerBase {
-        private readonly string _rootPath;
+        private readonly string          _rootPath;
+        private readonly IUploadingQueue _uploadingQueue;
 
-        public FilesController(IConfiguration configuration) {
-            _rootPath = Directory.GetCurrentDirectory() + configuration[ROOT_PATH];
+        public FilesController(IConfiguration configuration, IUploadingQueue uploadingQueue) {
+            _rootPath       = Directory.GetCurrentDirectory() + configuration[ROOT_PATH];
+            _uploadingQueue = uploadingQueue;
         }
 
         [HttpGet]
@@ -23,38 +28,41 @@ namespace HomeLink.Server.Controllers {
             await Task.FromResult(Directory.GetFiles(_rootPath))
         );
 
+        [HttpGet]
+        [ProducesResponseType(typeof(IUploadingFile[]), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> GetQueuedFiles() => Ok(
+            await _uploadingQueue.GetQueuedFiles()
+        );
+
         [HttpGet("{name}")]
         [ProducesResponseType(typeof(byte[]), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get(string name) {
-            if (string.IsNullOrWhiteSpace(name)) return NotFound();
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest();
 
-            var       path   = Path.Combine(_rootPath, name);
-            var       memory = new MemoryStream();
+            var path = Path.Combine(_rootPath, name);
+            var file = new DownloadingFile(path);
+            if (!file.IsExists) return NotFound();
 
-            using var stream = new FileStream(path, FileMode.Open);
+            var memory = await file.Download();
 
-            await stream.CopyToAsync(memory);
-            memory.Position = 0;
-
-            return File(memory, path.GetContentType(), Path.GetFileName(path));
+            return File(memory, file.ContentType, file.FileName);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(IFormFile file) {
-            if (file is null || file.Length == 0) return BadRequest();
-
-            var       path   = Path.Combine(_rootPath, file.FileName);
-            if (System.IO.File.Exists(path)) return BadRequest();
-
-            using var stream = new FileStream(path, FileMode.Create);
-
-            await file.CopyToAsync(stream);
+        public async Task<IActionResult> Post(IList<IFormFile> files) {
+            if (files.Count == 0) return BadRequest();
+            
+            foreach (var formFile in files) {
+                var file = new UploadingFile(_rootPath, formFile);
+            
+                await _uploadingQueue.QueueFile(file);
+            }
 
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id) {
+        [HttpDelete("{name}")]
+        public void Delete(string name) {
         }
     }
 }

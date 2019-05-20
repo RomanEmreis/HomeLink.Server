@@ -1,3 +1,4 @@
+using HomeLink.Server.Background;
 using HomeLink.Server.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,8 @@ namespace HomeLink.Server {
         public void ConfigureServices(IServiceCollection services) {
             services
                 .AddSwagger()
+                .AddHostedService<UploadingService>()
+                .AddSingleton<IUploadingQueue, UploadingQueue>()
                 .AddControllers()
                 .AddNewtonsoftJson();
         }
