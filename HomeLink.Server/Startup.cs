@@ -1,3 +1,4 @@
+using HomeLink.Server.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,9 @@ namespace HomeLink.Server {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers()
+            services
+                .AddSwagger()
+                .AddControllers()
                 .AddNewtonsoftJson();
         }
 
@@ -22,9 +25,11 @@ namespace HomeLink.Server {
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection()
+            app
+               .UseHttpsRedirection()
                .UseRouting()
                .UseAuthorization()
+               .UseSwaggerExt()
                .UseEndpoints(endpoints => 
                    endpoints.MapControllers()
                 );

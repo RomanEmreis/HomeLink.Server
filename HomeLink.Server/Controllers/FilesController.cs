@@ -1,5 +1,8 @@
 ﻿using System.IO;
+using System.Net;
 using System.Threading.Tasks;
+using HomeLink.Server.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using static HomeLink.Server.Constants;
@@ -15,18 +18,39 @@ namespace HomeLink.Server.Controllers {
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(string[]), 200)]
+        [ProducesResponseType(typeof(string[]), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> Get() => Ok(
             await Task.FromResult(Directory.GetFiles(_rootPath))
         );
 
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id) {
-            return "value";
+        [HttpGet("{name}")]
+        [ProducesResponseType(typeof(byte[]), (int) HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(string name) {
+            if (string.IsNullOrWhiteSpace(name)) return NotFound();
+
+            var       path   = Path.Combine(_rootPath, name);
+            var       memory = new MemoryStream();
+
+            using var stream = new FileStream(path, FileMode.Open);
+
+            await stream.CopyToAsync(memory);
+            memory.Position = 0;
+
+            return File(memory, path.GetContentType(), Path.GetFileName(path));
         }
 
         [HttpPost]
-        public void Post([FromBody] string value) {
+        public async Task<IActionResult> Post(IFormFile file) {
+            if (file is null || file.Length == 0) return BadRequest();
+
+            var       path   = Path.Combine(_rootPath, file.FileName);
+            if (System.IO.File.Exists(path)) return BadRequest();
+
+            using var stream = new FileStream(path, FileMode.Create);
+
+            await file.CopyToAsync(stream);
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]

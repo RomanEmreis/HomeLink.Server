@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>fffc3d98-1916-4a7d-97e6-545c64e41333</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/api/files</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/</DockerServiceUrl>
     <DockerServiceName>homelink.server</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
