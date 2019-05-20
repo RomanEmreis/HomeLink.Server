@@ -6,11 +6,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44398
-      - VOLUMES_FOLDER
+      - VOLUME_FOLDER
     ports:
       - "57807:80"
       - "44398:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${VOLUMES_FOLDER}/Files:/app/Files:rw
+      - ${VOLUME_FOLDER}/Files:/app/Files:rw
