@@ -1,12 +1,12 @@
-﻿using HomeLink.Server.Model;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeLink.Server.Background {
     public interface IUploadingQueue {
-        ValueTask QueueFile(IUploadingFile file);
+        ValueTask QueueFile(IFormFile file);
 
-        Task<IUploadingFile> Dequeue(CancellationToken cancellationToken);
+        Task<IFormFile> Dequeue(CancellationToken cancellationToken);
 
         ValueTask<string[]> GetQueuedFiles();
     }

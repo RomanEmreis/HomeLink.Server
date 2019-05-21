@@ -1,4 +1,4 @@
-﻿using HomeLink.Server.Model;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -6,11 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeLink.Server.Background {
-    public sealed class UploadingQueue : IUploadingQueue {
-        private ConcurrentQueue<IUploadingFile> _uploadingFiles = new ConcurrentQueue<IUploadingFile>();
-        private SemaphoreSlim                   _signal        = new SemaphoreSlim(0);
+    internal sealed class UploadingQueue : IUploadingQueue {
+        private ConcurrentQueue<IFormFile> _uploadingFiles = new ConcurrentQueue<IFormFile>();
+        private SemaphoreSlim              _signal         = new SemaphoreSlim(0);
 
-        public ValueTask QueueFile(IUploadingFile uploadingFile) {
+        public ValueTask QueueFile(IFormFile uploadingFile) {
             if (uploadingFile is null) throw new ArgumentNullException(nameof(uploadingFile));
 
             _uploadingFiles.Enqueue(uploadingFile);
@@ -19,7 +19,7 @@ namespace HomeLink.Server.Background {
             return new ValueTask();
         }
 
-        public async Task<IUploadingFile> Dequeue(CancellationToken cancellationToken) {
+        public async Task<IFormFile> Dequeue(CancellationToken cancellationToken) {
             await _signal.WaitAsync(cancellationToken);
 
             if (_uploadingFiles.TryDequeue(out var uploadingFile))
@@ -31,7 +31,7 @@ namespace HomeLink.Server.Background {
         public ValueTask<string[]> GetQueuedFiles() => 
             new ValueTask<string[]>(
                 _uploadingFiles
-                    .Select(f => f.ToString())
+                    .Select(f => f.FileName)
                     .ToArray()
             );
     }

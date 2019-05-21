@@ -1,8 +1,10 @@
 using HomeLink.Server.Background;
 using HomeLink.Server.Extensions;
+using HomeLink.Server.Services;
 using HomeLink.Server.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,8 +18,10 @@ namespace HomeLink.Server {
         public void ConfigureServices(IServiceCollection services) {
             services
                 .AddSwagger()
-                .AddHostedService<UploadingService>()
+                .AddHostedService<UploadingQueueService>()
                 .AddSingleton<IUploadingQueue, UploadingQueue>()
+                .AddScoped<IDownloadingService, DownloadingService>()
+                .AddScoped<IUploadingService, UploadingService>()
                 .AddScoped<FileNameValidationFilter>()
                 .AddScoped<UploadingDataValidationFilter>()
                 .AddControllers()

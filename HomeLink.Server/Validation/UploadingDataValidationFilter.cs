@@ -10,9 +10,10 @@ namespace HomeLink.Server.Validation {
         public void OnActionExecuting(ActionExecutingContext context) {
             var param = context.ActionArguments
                 .Select(a => a.Value)
-                .OfType<IFormFile>();
+                .OfType<IFormFile>()
+                .SingleOrDefault();
 
-            if (param.Any()) return;
+            if (!(param is null) && param.Length != 0) return;
 
             context.Result = new BadRequestObjectResult(_errorMessage);
         }
