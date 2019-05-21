@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeLinkServer\HomeLink.Server\HomeLink.Server.csproj" />
+    <ProjectReference Include="..\HomeLink.Server\HomeLink.Server.csproj" />
   </ItemGroup>
 
 </Project>
