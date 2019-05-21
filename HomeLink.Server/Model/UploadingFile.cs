@@ -16,8 +16,8 @@ namespace HomeLink.Server.Model {
         public bool IsExists => File.Exists(_path);
 
         public async Task Upload(CancellationToken cancellationToken) {
-            using (var stream = new FileStream(_path, FileMode.Create))
-                await _formFile.CopyToAsync(stream, cancellationToken);
+            using var stream = new FileStream(_path, FileMode.Create);
+            await _formFile.CopyToAsync(stream, cancellationToken);
         }
 
         public override string ToString() => _formFile.FileName;

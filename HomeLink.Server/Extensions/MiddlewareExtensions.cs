@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using static HomeLink.Server.Constants;
+using static HomeLink.Server.AppConstants;
 
 namespace HomeLink.Server.Extensions {
     internal static class MiddlewareExtensions {

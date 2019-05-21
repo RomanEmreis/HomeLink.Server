@@ -1,5 +1,6 @@
 using HomeLink.Server.Background;
 using HomeLink.Server.Extensions;
+using HomeLink.Server.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,8 @@ namespace HomeLink.Server {
                 .AddSwagger()
                 .AddHostedService<UploadingService>()
                 .AddSingleton<IUploadingQueue, UploadingQueue>()
+                .AddScoped<FileNameValidationFilter>()
+                .AddScoped<UploadingDataValidationFilter>()
                 .AddControllers()
                 .AddNewtonsoftJson();
         }

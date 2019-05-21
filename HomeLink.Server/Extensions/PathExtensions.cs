@@ -1,29 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace HomeLink.Server.Extensions {
     internal static class PathExtensions {
         internal static string GetContentType(this string path) {
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-            if (_mimeTypes.TryGetValue(ext, out var type))
-                return type;
+            var ext = Path.GetExtension(path)?.ToLowerInvariant();
 
-            throw new ArgumentException(); //TODO: add custom ex
+            return ext switch {
+                FileExtensions.Txt  => ContentTypes.Text,
+                FileExtensions.Pdf  => ContentTypes.Pdf,
+                FileExtensions.Doc  => ContentTypes.MsWord,
+                FileExtensions.Docx => ContentTypes.MsWord,
+                FileExtensions.Xls  => ContentTypes.MsExcel,
+                FileExtensions.Xlsx => ContentTypes.SpreadSheet,
+                FileExtensions.Png  => ContentTypes.Png,
+                FileExtensions.Jpeg => ContentTypes.Jpg,
+                FileExtensions.Jpg  => ContentTypes.Jpg,
+                FileExtensions.Gif  => ContentTypes.Gif,
+                FileExtensions.Csv  => ContentTypes.Csv,
+                _                   => throw new InvalidOperationException()
+            };
         }
-
-        private static readonly Dictionary<string, string> _mimeTypes = new Dictionary<string, string> {
-            [".txt"] = "text/plain",
-            [".pdf"] = "application/pdf",
-            [".doc"] = "application/vnd.ms-word",
-            [".docx"] = "application/vnd.ms-word",
-            [".xls"] = "application/vnd.ms-excel",
-            [".xlsx"] = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",  
-            [".png"] = "image/png",
-            [".jpg"] = "image/jpeg",
-            [".jpeg"] = "image/jpeg",
-            [".gif"] = "image/gif",
-            [".csv"] = "text/csv"
-        };
     }
 }

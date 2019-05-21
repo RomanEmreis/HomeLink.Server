@@ -17,12 +17,13 @@ namespace HomeLink.Server.Background {
 
         protected async override Task ExecuteAsync(CancellationToken cancellationToken) {
             while (!cancellationToken.IsCancellationRequested) {
-                using (var scope = _serviceScopeFactory.CreateScope()) {
-                    var uploadingFile = await _uploadingQueue.Dequeue(cancellationToken);
-                    try {
-                        await uploadingFile.Upload(cancellationToken);
-                    } catch {
-                    }
+                //using (var scope = _serviceScopeFactory.CreateScope()) {
+                //
+                //}
+                var uploadingFile = await _uploadingQueue.Dequeue(cancellationToken);
+                try {
+                    await uploadingFile.Upload(cancellationToken);
+                } catch {
                 }
             }
         }

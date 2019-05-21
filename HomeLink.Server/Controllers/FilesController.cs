@@ -3,12 +3,12 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using HomeLink.Server.Background;
-using HomeLink.Server.Extensions;
 using HomeLink.Server.Model;
+using HomeLink.Server.Validation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using static HomeLink.Server.Constants;
+using static HomeLink.Server.AppConstants;
 
 namespace HomeLink.Server.Controllers {
     [Route("api/[controller]")]
@@ -24,11 +24,11 @@ namespace HomeLink.Server.Controllers {
 
         [HttpGet]
         [ProducesResponseType(typeof(string[]), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get() => Ok(
+        public async Task<IActionResult> GetFiles() => Ok(
             await Task.FromResult(Directory.GetFiles(_rootPath))
         );
 
-        [HttpGet]
+        [HttpGet("queue")]
         [ProducesResponseType(typeof(IUploadingFile[]), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> GetQueuedFiles() => Ok(
             await _uploadingQueue.GetQueuedFiles()
@@ -36,25 +36,20 @@ namespace HomeLink.Server.Controllers {
 
         [HttpGet("{name}")]
         [ProducesResponseType(typeof(byte[]), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(string name) {
-            if (string.IsNullOrWhiteSpace(name)) return BadRequest();
-
-            var path = Path.Combine(_rootPath, name);
-            var file = new DownloadingFile(path);
+        [ServiceFilter(typeof(FileNameValidationFilter))]
+        public async Task<IActionResult> DownloadFile(string name) {
+            var file = new DownloadingFile(_rootPath, name);
             if (!file.IsExists) return NotFound();
 
             var memory = await file.Download();
-
             return File(memory, file.ContentType, file.FileName);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(IList<IFormFile> files) {
-            if (files.Count == 0) return BadRequest();
-            
+        [ServiceFilter(typeof(UploadingDataValidationFilter))]
+        public async Task<IActionResult> UploadFiles(IList<IFormFile> files) {           
             foreach (var formFile in files) {
                 var file = new UploadingFile(_rootPath, formFile);
-            
                 await _uploadingQueue.QueueFile(file);
             }
 
@@ -62,6 +57,7 @@ namespace HomeLink.Server.Controllers {
         }
 
         [HttpDelete("{name}")]
+        [ServiceFilter(typeof(FileNameValidationFilter))]
         public void Delete(string name) {
         }
     }

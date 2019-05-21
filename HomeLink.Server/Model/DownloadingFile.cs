@@ -6,7 +6,8 @@ namespace HomeLink.Server.Model {
     public sealed class DownloadingFile : IDownloadingFile {
         private readonly string _path;
 
-        public DownloadingFile(string path) => _path = path;
+        public DownloadingFile(string rootPath, string fileName) => 
+            _path = Path.Combine(rootPath, fileName);
 
         public string FileName => Path.GetFileName(_path);
 
