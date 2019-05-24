@@ -20,8 +20,8 @@ namespace HomeLink.Server.Validation {
                 .OfType<string>()
                 .SingleOrDefault();
 
-            if (!string.IsNullOrWhiteSpace(param))                              return;
-            if (File.Exists(Path.Combine(_configuration.GetRootPath(), param))) return;
+            if (!string.IsNullOrWhiteSpace(param) && File.Exists(Path.Combine(_configuration.GetRootPath(), param)))
+                return;
 
             context.Result = new BadRequestObjectResult(_errorMessage);
         }

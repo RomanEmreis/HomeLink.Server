@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using HomeLink.Server.Background;
 using HomeLink.Server.Services;
@@ -40,8 +41,10 @@ namespace HomeLink.Server.Controllers {
 
         [HttpPost]
         [ServiceFilter(typeof(UploadingDataValidationFilter))]
-        public async Task<IActionResult> UploadFile(IFormFile file) {
-            await _uploadingQueue.QueueFile(file);
+        public async Task<IActionResult> UploadFiles(IList<IFormFile> files) {
+            foreach (var file in files)
+                await _uploadingQueue.QueueFile(file);
+
             return Ok();
         }
     }
