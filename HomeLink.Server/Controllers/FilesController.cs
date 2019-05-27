@@ -42,9 +42,7 @@ namespace HomeLink.Server.Controllers {
         [HttpPost]
         [ServiceFilter(typeof(UploadingDataValidationFilter))]
         public async Task<IActionResult> UploadFiles(IList<IFormFile> files) {
-            foreach (var file in files)
-                await _uploadingQueue.QueueFile(file);
-
+            await _uploadingQueue.QueueFiles(files);
             return Ok();
         }
     }

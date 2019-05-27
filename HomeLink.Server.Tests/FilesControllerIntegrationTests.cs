@@ -45,14 +45,18 @@ namespace HomeLink.Server.Tests {
         [Fact]
         public async Task UploadFileTest_Returns_StatusCode_Ok() {
             var fileName     = "2.txt";
-            var payload      = await File.ReadAllBytesAsync(Path.Combine(Directory.GetCurrentDirectory(), fileName));
+            var payload      = File.ReadAllBytes(Path.Combine(Directory.GetCurrentDirectory(), fileName));
             var content      = new ByteArrayContent(payload);
 
             var multiContent = new MultipartFormDataContent();
             multiContent.Add(content, "files", fileName);
 
             var httpResponse = await _client.PostAsync("/api/files/", multiContent);
+
+            var uploadedFileInfo = new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), "2.txt"));
             httpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            uploadedFileInfo.Exists.Should().BeTrue();
+            uploadedFileInfo.Length.Should().NotBe(0);
         }
 
         [Fact]

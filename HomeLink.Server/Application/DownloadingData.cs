@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace HomeLink.Server.Model {
+namespace HomeLink.Server.Application {
     public sealed class DownloadingData {
         public DownloadingData(string fileName, string contentType, MemoryStream data) =>
             (FileName, ContentType, Data) = (fileName, contentType, data);

@@ -1,5 +1,5 @@
-﻿using HomeLink.Server.Extensions;
-using Microsoft.AspNetCore.Http;
+﻿using HomeLink.Server.Application;
+using HomeLink.Server.Extensions;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Threading;
@@ -12,9 +12,7 @@ namespace HomeLink.Server.Services {
         public UploadingService(IConfiguration configuration) => 
             _path = configuration.GetRootPath();
 
-        public async Task Upload(IFormFile file, CancellationToken cancellationToken) {
-            using var stream = new FileStream(Path.Combine(_path, file.FileName), FileMode.Create);
-            await file.CopyToAsync(stream, cancellationToken);
-        }
+        public Task Upload(IFileData file, CancellationToken cancellationToken) => 
+            file.Save(Path.Combine(_path, file.FileName), cancellationToken);
     }
 }

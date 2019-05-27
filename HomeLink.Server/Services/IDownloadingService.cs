@@ -1,4 +1,4 @@
-﻿using HomeLink.Server.Model;
+﻿using HomeLink.Server.Application;
 using System.Threading.Tasks;
 
 namespace HomeLink.Server.Services {

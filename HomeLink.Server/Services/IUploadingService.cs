@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HomeLink.Server.Application;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeLink.Server.Services {
     public interface IUploadingService {
-        Task Upload(IFormFile file, CancellationToken cancellationToken);
+        Task Upload(IFileData file, CancellationToken cancellationToken);
     }
 }

@@ -1,5 +1,5 @@
-﻿using HomeLink.Server.Extensions;
-using HomeLink.Server.Model;
+﻿using HomeLink.Server.Application;
+using HomeLink.Server.Extensions;
 using JM.LinqFaster;
 using Microsoft.Extensions.Configuration;
 using System.IO;

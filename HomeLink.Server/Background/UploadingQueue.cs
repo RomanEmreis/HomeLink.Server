@@ -1,25 +1,35 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using HomeLink.Server.Application;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeLink.Server.Background {
     internal sealed class UploadingQueue : IUploadingQueue {
-        private ConcurrentQueue<IFormFile> _uploadingFiles = new ConcurrentQueue<IFormFile>();
-        private SemaphoreSlim              _signal         = new SemaphoreSlim(0);
+        private readonly IFileProvider              _fileProvider;
+        private          ConcurrentQueue<IFileData> _uploadingFiles = new ConcurrentQueue<IFileData>();
+        private          SemaphoreSlim              _signal         = new SemaphoreSlim(0);
 
-        public ValueTask QueueFile(IFormFile uploadingFile) {
+        public UploadingQueue(IFileProvider fileProvider) => _fileProvider = fileProvider;
+
+        public async Task QueueFile(IFormFile uploadingFile) {
             if (uploadingFile is null) throw new ArgumentNullException(nameof(uploadingFile));
 
-            _uploadingFiles.Enqueue(uploadingFile);
-            _signal.Release();
+            var fileData = await _fileProvider.GetFileData(uploadingFile, CancellationToken.None);
 
-            return new ValueTask();
+            _uploadingFiles.Enqueue(fileData);
+            _signal.Release();
         }
 
-        public async Task<IFormFile> Dequeue(CancellationToken cancellationToken) {
+        public async Task QueueFiles(IList<IFormFile> files) {
+            foreach (var file in files)
+                await QueueFile(file);
+        }
+
+        public async Task<IFileData> Dequeue(CancellationToken cancellationToken) {
             await _signal.WaitAsync(cancellationToken);
 
             if (_uploadingFiles.TryDequeue(out var uploadingFile))
