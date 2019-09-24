@@ -14,7 +14,7 @@ namespace HomeLink.Server.Validation {
                 .OfType<IList<IFormFile>>()
                 .SingleOrDefault();
 
-            if (!(param is null) && param.Count != 0) return;
+            if (param is {} && param.Count != 0) return;
 
             context.Result = new BadRequestObjectResult(_errorMessage);
         }
